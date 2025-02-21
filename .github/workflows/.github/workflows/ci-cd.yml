@@ -1,0 +1,34 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with: 
+            python-version: '3.x'
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt || true
+
+      - name: Run Tests
+        run: python -m unittest discover
+        
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{github.ref == 'refs/heads/main' }}
+
+    steps:
+       - name: Deploy (Simulated)
+         run: echo "Deploying Hello World App..."
